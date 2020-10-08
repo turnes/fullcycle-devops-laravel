@@ -1,0 +1,63 @@
+version: '3'
+
+services:
+  nginx:    
+    build: .docker/nginx
+    image: turnes/fullcycle-devops-laravel-nginx
+    container_name: la-nginx
+    restart: always
+    tty: true
+    ports:
+      - "8000:80"
+    volumes:
+      - ./app/:/var/www
+    links:
+      - app
+    networks:
+      app-network:
+
+  redis:
+    image: redis:alpine
+    container_name: la-redis
+    expose:
+      - 6379
+    networks:
+      - app-network
+
+  app:
+    build: .
+    image: turnes/fullcycle-devops-laravel
+    container_name: la-app    
+    volumes:
+      - ./app/:/var/www
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy                    
+  
+  db:
+    build: .docker/mysql
+    image: turnes/fullcycle-devops-laravel-mysql
+    container_name: la-db
+    command: --innodb-use-native-aio=0
+    restart: always
+    tty: true
+    ports:
+      - "3306:3306"
+    env_file:
+      - ./app/.env
+    volumes:
+      - ./.docker/dbdata:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "/etc/init.d/mysql status"]
+      interval: 10s
+      timeout: 10s
+      retries: 4
+
+
+networks:
+  app-network:
+    driver: bridge
