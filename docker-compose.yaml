@@ -11,8 +11,6 @@ services:
       - "8000:80"
     volumes:
       - ./app/:/var/www
-    links:
-      - app
     networks:
       app-network:
 
@@ -47,6 +45,11 @@ services:
       - "3306:3306"
     env_file:
       - ./app/.env
+    environment:
+      - MYSQL_DATABASE="${DB_DATABASE}"
+      - MYSQL_ROOT_PASSWORD="${DB_PASSWORD}"
+      - MYSQL_USER="${DB_USERNAME}"
+
     volumes:
       - ./.docker/dbdata:/var/lib/mysql
     networks:
