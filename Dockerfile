@@ -47,5 +47,6 @@ USER www-data
 
 RUN ln -s public html
 
-EXPOSE 8000
-ENTRYPOINT [ "php", "artisan", "serve", "--host=0.0.0.0", "--port=8000" ]
+EXPOSE 9000
+#ENTRYPOINT [ "php", "artisan", "serve", "--host=0.0.0.0", "--port=8000" ]
+ENTRYPOINT [ "php-fpm" ]

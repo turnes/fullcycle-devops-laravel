@@ -24,7 +24,7 @@ services:
 
   app:
     build: .
-    image: turnes/fullcycle-devops-laravel
+    image: turnes/fullcycle-devops-laravel-compose
     container_name: la-app    
     volumes:
       - ./app/:/var/www
